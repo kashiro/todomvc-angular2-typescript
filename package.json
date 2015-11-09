@@ -1,0 +1,33 @@
+{
+  "name": "todomvc-angular2-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kashiro/todomvc-angular2-typescript.git"
+  },
+  "author": "Tomoyuki Kashiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kashiro/todomvc-angular2-typescript/issues"
+  },
+  "homepage": "https://github.com/todomvc-angular2-typescript/issues",
+  "devDependencies": {
+    "browser-sync": "^2.9.3",
+    "gulp": "^3.9.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-tslint": "^3.2.0",
+    "gulp-typescript": "^2.8.2",
+    "superstatic": "^1.2.3"
+  },
+  "dependencies": {
+    "bower-traceur-runtime": "git://github.com/jmcriffey/bower-traceur-runtime#0.0.87",
+    "systemjs": "^0.19.5",
+    "todomvc-app-css": "^2.0.1",
+    "todomvc-common": "^1.0.2"
+  }
+}
