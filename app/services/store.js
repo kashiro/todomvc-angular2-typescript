@@ -41,17 +41,32 @@ var Todo = (function () {
 })();
 exports.Todo = Todo;
 var TodoStore = (function () {
-    function TodoStore() {
+    function TodoStore(filter) {
+        this.todos = this.importData();
+        this.todos = this.filterList(filter);
+    }
+    TodoStore.prototype._updateStore = function () {
+        storage.setItem(this.todos);
+    };
+    TodoStore.prototype.importData = function () {
         var persistedTodos = storage.getItem();
-        this.todos = persistedTodos.map(function (todo) {
+        return persistedTodos.map(function (todo) {
             var ret = new Todo(todo.title);
             ret.completed = todo.completed;
             ret.uid = todo.uid;
             return ret;
         });
-    }
-    TodoStore.prototype._updateStore = function () {
-        storage.setItem(this.todos);
+    };
+    TodoStore.prototype.filterList = function (filter) {
+        if (filter === '/active') {
+            return this.get({ completed: false });
+        }
+        else if (filter === '/completed') {
+            return this.get({ completed: true });
+        }
+        else {
+            return this.importData();
+        }
     };
     TodoStore.prototype.get = function (state) {
         return this.todos.filter(function (todo) { return todo.completed === state.completed; });
@@ -99,7 +114,7 @@ var TodoStore = (function () {
     };
     TodoStore = __decorate([
         angular2_1.Injectable(), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [String])
     ], TodoStore);
     return TodoStore;
 })();

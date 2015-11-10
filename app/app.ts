@@ -1,6 +1,13 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import {Component, View, bootstrap, NgIf, NgFor} from 'angular2/angular2';
+import {Component, View, bootstrap, NgIf, NgFor, provide} from 'angular2/angular2';
+import {
+  ROUTER_DIRECTIVES,
+  ROUTER_PROVIDERS,
+  Location,
+  LocationStrategy,
+  HashLocationStrategy
+} from 'angular2/router';
 import {TodoStore, Todo} from './services/store';
 
 const ESC_KEY = 27;
@@ -10,7 +17,7 @@ const ENTER_KEY = 13;
   selector: 'todo-app'
 })
 @View({
-  directives: [NgIf, NgFor],
+  directives: [NgIf, NgFor, ROUTER_DIRECTIVES],
   template: `
     <section class="todoapp">
       <header class="header">
@@ -44,8 +51,19 @@ const ENTER_KEY = 13;
           </li>
         </ul>
       </section>
-      <footer class="footer" *ng-if="todoStore.todos.length > 0">
+      <footer class="footer" *ng-if="location.path() !== '' || todoStore.todos.length > 0">
         <span class="todo-count"><strong>{{todoStore.getRemaining().length}}</strong>{{todoStore.getRemaining().length == 1 ? 'item' : 'items'}} left</span>
+        <ul class="filters">
+          <li>
+            <a [class.selected]="location.path() === ''" href="/#/">All</a>
+          </li>
+          <li>
+            <a [class.selected]="location.path() === '/active'" href="/#/active">Active</a>
+          </li>
+          <li>
+            <a [class.selected]="location.path() === '/completed'" href="/#/completed">Completed</a>
+          </li>
+        </ul>
         <button class="clear-completed" *ng-if="todoStore.getCompleted().length > 0" (click)="removeCompleted()">Clear completed</button>
       </footer>
     </section>
@@ -54,8 +72,10 @@ const ENTER_KEY = 13;
 
 class TodoApp {
   todoStore: TodoStore;
-  constructor() {
-    this.todoStore = new TodoStore();
+  location: Location;
+  constructor(location: Location) {
+    this.todoStore = new TodoStore(location.path());
+    this.location = location;
   }
   stopEditing(todo: Todo, editedTitle) {
     todo.setTitle(editedTitle.value);
@@ -91,4 +111,4 @@ class TodoApp {
   }
 }
 
-bootstrap(TodoApp);
+bootstrap(TodoApp, [ROUTER_PROVIDERS, provide(LocationStrategy, {useClass: HashLocationStrategy})]);

@@ -40,17 +40,30 @@ export class Todo {
 @Injectable()
 export class TodoStore {
   todos: Array<Todo>;
-  constructor() {
+  constructor(filter: String) {
+    this.todos = this.importData();
+    this.todos = this.filterList(filter);
+  }
+  _updateStore() {
+    storage.setItem(this.todos);
+  }
+  importData() {
     let persistedTodos = storage.getItem();
-    this.todos = persistedTodos.map((todo: {title: String, completed: Boolean, uid: String}) => {
+    return persistedTodos.map((todo: {title: String, completed: Boolean, uid: String}) => {
       let ret = new Todo(todo.title);
       ret.completed = todo.completed;
       ret.uid = todo.uid;
       return ret;
     });
   }
-  _updateStore() {
-    storage.setItem(this.todos);
+  filterList(filter: String) {
+    if (filter === '/active') {
+      return this.get({completed: false});
+    } else if (filter === '/completed') {
+      return this.get({completed: true});
+    } else {
+      return this.importData();
+    }
   }
   get(state: {completed: Boolean}) {
     return this.todos.filter((todo: Todo) => todo.completed === state.completed);
